@@ -1,0 +1,78 @@
+{% assign productIds = "" | split: ',' %}
+					 {% assign productId = product.id | strip %}
+					 {% if productIds contains productId %}
+						<div class="countdown">
+							<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Unica+One:400|Open+Sans" />
+							{{ 'dailydeal-jquery.min.js' | asset_url | script_tag }}
+							{{ 'dailydeal-flip-countdown.js' | asset_url | script_tag }}
+							{{ 'dailydeal-flip-countdown.css' | asset_url | stylesheet_tag }}
+							{{ 'dailydeal-special-css.css' | asset_url | stylesheet_tag }}
+							<style>
+								.countdown div.digits div.digits-inner div.flip-wrap div.up div.inn, .countdown div.digits div.digits-inner div.flip-wrap div.down div.inn { background: #333333; color: #FFFFFF; }
+								.countdown .unit-wrap > span { color: #333333; }
+								.countdown .title-big { color: #F04D3B !important; }
+							</style>
+							<span class="title-big" style="font-family:'Open Sans'">Time left to buy</span>
+							<div class="flip-countdown" id="countdown{{ product.id }}">
+								<div class="unit-wrap">
+									<div class="days"></div>
+									<span class="ce-days-label"></span>
+								</div>
+								<div class="unit-wrap">
+									<div class="hours"></div>
+									<span class="ce-hours-label"></span>
+								</div>
+								<div class="unit-wrap">
+									<div class="minutes"></div>
+									<span class="ce-minutes-label"></span>
+								</div>
+								<div class="unit-wrap">
+									<div class="seconds"></div>
+									<span class="ce-seconds-label"></span>
+								</div>
+							</div>
+							<script type="text/javascript">
+								var productsDateTimeTo = {};
+								var dateTimeTo = false;
+								jQueryDD.each(productsDateTimeTo, function(time, product_ids) {
+									var productIds = product_ids.split(',');
+									if (jQueryDD.inArray("{{ product.id }}", productIds) !== -1) {
+										dateTimeTo = time;
+									}
+								});
+
+								if (dateTimeTo === false) {
+									jQueryDD('#countdown{{ product.id }}').parent().remove();
+								}
+								var countdownId = "";
+					            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+					            for( var i=0; i < 5; i++ ) countdownId += possible.charAt(Math.floor(Math.random() * possible.length));
+					            jQueryDD('#countdown{{ product.id }}').attr({'id':'countdown{{ product.id }}-'+countdownId});
+
+								var gmt = 00;
+							    var aDate = new Date();
+							    var utc = aDate.getTime() + (aDate.getTimezoneOffset() * 60000);
+							    var newdate = new Date(utc + (3600000*gmt));
+							    var monthNames = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+								var hours = newdate.getHours().toString();
+								if (hours.length==1) {
+									hours = '0'+hours;
+								}
+								var minutes = newdate.getMinutes().toString();
+								if (minutes.length==1) {
+									minutes = '0'+minutes;
+								}
+								var seconds = newdate.getSeconds().toString();
+								if (seconds.length==1) {
+									seconds = '0'+seconds;
+								}
+
+								var currentDate = monthNames[newdate.getMonth()]+' '+newdate.getDate()+', '+newdate.getFullYear()+' '+hours+':'+minutes+':'+seconds;
+								
+								if (dateTimeTo !== false) {
+									var dateTimeArray = dateTimeTo.split(' ');
+									runCountdown('countdown{{ product.id }}-'+countdownId,dateTimeArray[0],dateTimeArray[1],currentDate,'DAYS','HOURS','MINUTES','SECONDS');
+								}
+							</script>
+						</div>
+					{% endif %}
